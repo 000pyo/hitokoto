@@ -41,6 +41,9 @@ function timeCtrl($scope,$timeout) {
     		}
             
             alert("");
+            
+            
+            <!-- Call chrome.notifications -->
 
 
 
