@@ -7,6 +7,7 @@ Issues
 
 Notes
 - Replace notify1.mp3 with desired sound to ring
+- Everything will be reset when the window is closed
 
 Test run
 - Enable developer mode on Chrome's "chrome://extensions"
