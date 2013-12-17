@@ -4,6 +4,8 @@ Test Chrome app for reminding Milimas' Hitokoto Soushin
 
 Issues
 - Currently only have sound notification
+
+Notes
 - Replace notify1.mp3 with desired sound to ring
 
 Test run
