@@ -1,0 +1,15 @@
+{
+  "manifest_version": 2,
+  "name": "Hitokoto Reminder",
+  "version": "1",
+  "permissions": ["notifications"],
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+
+    }
+  },
+
+  "minimum_chrome_version": "23"
+
+}
