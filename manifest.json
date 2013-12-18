@@ -2,11 +2,12 @@
   "manifest_version": 2,
   "name": "Hitokoto Reminder",
   "version": "0.1",
-  "permissions": ["notifications","storage", "<all_urls>"
+  "permissions": ["notifications","storage", "alarms", "<all_urls>"
   ],
   "app": {
     "background": {
-      "scripts": ["main.js"]
+      "page": "background.html"
+
 
     }
   },

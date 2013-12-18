@@ -5,10 +5,8 @@ function timeCtrl($scope,$timeout) {
     $scope.displayTime;
     $scope.startTime;
     $scope.finishTime; 
-    $scope.clicked = false;
+    $scope.htkActive = false;
     $scope.currentTime = Date.now();
-
-    var alertNotified = false;
 
 
 
@@ -29,123 +27,120 @@ function timeCtrl($scope,$timeout) {
 
     	//Update current time
     	updateTime();
-
-        //Check if button clicked
-    	if($scope.clicked && $scope.counter <= 0 && alertNotified == false)
-    	{
-    		if($('#chkSound').is(':checked'))
-    		{
-            	$('#notifyAudio')[0].play();
-    		}
-
-
-            var notification = window.webkitNotifications.createNotification(
-                'logo1.png', 'ひとこと送信の時間', notifyMessage[randomInt(0, notifyMessage.length - 1)]);
-
-            notification.onclick = function(){if($scope.clicked){$('#btnReset').click()}};
-            notification.onclose = function(){if($scope.clicked){$('#btnReset').click()}};
-
-            notification.show();
-
-
-            alertNotified = true;
-
-			
-    	}
         
     }
 
 
-
-
     var mytimeout = $timeout($scope.onTimeout,1000);
     
+
     $scope.reset= function(){
-    	if($scope.clicked)
+    	if(!($scope.htkActive))
     	{
-    		$scope.clicked = false;
-    		$('#counter').hide();
-        	$('#notifyAudio')[0].pause();
-        	alertNotified = false;
-        	$('#btnReset').text("Start");
-        	$('#btnReset').addClass("btn-success");
-        	$('#btnReset').removeClass("btn-danger")
-        	$("#notifyAudio")[0].currentTime = 0;
+
+            var duration = 8*60*60*1000;
+            $scope.startTime = Date.now();
+            $scope.finishTime = Date.now() + duration;
+            chrome.storage.sync.set({"htkStartTime": $scope.startTime}, function() {});
+            chrome.storage.sync.set({"htkFinishTime": $scope.finishTime}, function() {});
+            chrome.alarms.create('hitokotoAlarm', {when: $scope.finishTime});
+
+            //$scope.htkActive = true;
+            chrome.storage.sync.set({"htkActive": true}, function() {});
+            $('#counter').show();
+            $('#btnReset').text("Stop");
+            $('#btnReset').addClass("btn-danger");
+            $('#btnReset').removeClass("btn-success")
+            //$('#debug_1').append($scope.htkActive);
+
     	}
     	else
     	{
-    		var duration = 8*60*60*1000;
-        	$scope.startTime = Date.now();
-        	$scope.finishTime = Date.now() + duration;
-        	$scope.clicked = true;
-        	$('#counter').show();
-        	$('#btnReset').text("Stop");
-        	$('#btnReset').addClass("btn-danger");
-        	$('#btnReset').removeClass("btn-success")
+            
+    		chrome.storage.sync.set({"htkActive": false}, function() {});
+            //$('#debug_1').append($scope.htkActive);
     	}
     	
     }
 
+
     $('#txtChkSound').click(function(){
         $('#chkSound').prop("checked", !($('#chkSound').is(':checked')));
+        chkSoundChanged();
     });
 
+    $('#chkSound').change(function(){
+        //$('#debug_1').append("Test1");
+        chkSoundChanged();
+    });
+
+    function chkSoundChanged(){
+        var newValue = ($('#chkSound').is(':checked'));
+        //$('#debug_1').append("Test2");
+        chrome.storage.sync.set({"chkSound": newValue}, function() {});
+        //$('#debug_1').append("Test3");
+    }
+
+
+    chrome.storage.sync.get("chkSound", function(val) {
+        //$('#debug_1').append(val["chkSound"])
+        $('#chkSound').prop("checked", val["chkSound"]);
+    });
+
+    chrome.storage.sync.get("htkActive", function(val) {
+        //$('#debug_1').append(val["htkActive"]);
+        $scope.htkActive = val["htkActive"];
+        if(val["htkActive"])
+        {
+            $('#counter').show();
+            $('#btnReset').text("Stop");
+            $('#btnReset').addClass("btn-danger");
+            $('#btnReset').removeClass("btn-success")
+
+            chrome.storage.sync.get("htkFinishTime", function(val) {
+                $scope.finishTime = val["htkFinishTime"];
+            });
+
+            chrome.storage.sync.get("htkStartTime", function(val) {
+                $scope.startTime = val["htkStartTime"];
+            });
+        }
+    });
 
     
+
 
 
     $(document).ready(function(){
         $('#counter').hide();
     });
 
-    function randomInt(min, max){
-        return Math.floor(Math.random()*(max-min+1)+min);
-    }
+    chrome.storage.onChanged.addListener(function(changes, namespace) {
+      if (changes["htkActive"]){
+        //$('#debug_1').append(changes["clicked"]);
+        $scope.htkActive = changes["htkActive"].newValue;
+        $('#debug_1').append($scope.htkActive);
 
-    var notifyMessage = new Array();
-    notifyMessage[0] = "ほ？";
-    notifyMessage[1] = "ffdy";
-    notifyMessage[2] = "解体のアイドルnkcdy4649";
-    notifyMessage[3] = "ﾓﾁｮｶﾜｲｲﾈｰ";
-    notifyMessage[4] = "ｾﾘｶｶﾜｲｲﾈｰ";
-    notifyMessage[5] = "モチョカワイイネー";
-    notifyMessage[6] = "もちょかわいいねー";
-    notifyMessage[7] = "闇に飲まれよ";
-    notifyMessage[8] = "煩わしい太陽ね";
-    notifyMessage[9] = "天空の光よ!!";
-    notifyMessage[10] = "クックック…闇に飲まれよ！";
-    notifyMessage[11] = "まぁまぁ眼鏡どうぞ";
-    notifyMessage[12] = "まぁまぁ猫耳どうぞ♪";
-    notifyMessage[13] = "わかるわ";
-    notifyMessage[14] = "わからないわ";
-    notifyMessage[15] = "ハピハピしてるぅ？";
-    notifyMessage[16] = "!すでのな";
-    notifyMessage[17] = "なのです!";
-    notifyMessage[18] = "にょわー☆";
-    notifyMessage[19] = "にょわにょわにょわにょわ";
-    notifyMessage[20] = "หยวยๆๆๆ";
+        //$('#debug_1').append($scope.clicked);
+        //$('#debug_1').append($scope.clicked);
+        if(!$scope.htkActive)
+        {
+            //$('#debug_1').append($scope.htkActive);
+            $('#counter').hide();
+            $('#btnReset').text("Start");
+            $('#btnReset').addClass("btn-success");
+            $('#btnReset').removeClass("btn-danger")
+            $scope.htkActive = false;
+        }
+      }
+  });
 
-
-
-/*
-document.querySelector('#btnTest').addEventListener('click', function() {
-    
-    $('#debug_1').append("Test1");
-    var havePermission = window.webkitNotifications.checkPermission();
     
 
-  if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-    // function defined in step 2
-    //alert(havePermission);
-    window.webkitNotifications.createNotification(
-        'logo1.png', 'Notification Title', 'Notification content...').show();
-
-
-  } else {
-    window.webkitNotifications.requestPermission();
-  }
-}, false);*/
-
+    //For Testing
+    $('#btnTest').click(function(){
+        chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 10000});
+    });
 
 
 
