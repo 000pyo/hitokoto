@@ -1,4 +1,4 @@
-Hitokoto Reminder
+Hitokoto Reminder v.0.1
 ==================
 Test Chrome app for reminding Milimas' Hitokoto Soushin
 
