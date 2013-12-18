@@ -43,7 +43,14 @@ function timeCtrl($scope,$timeout) {
             	$('#notifyAudio')[0].play();
     		}
             
+<<<<<<< HEAD
             //alert("");
+=======
+            alert("");
+            
+            
+            <!-- Call chrome.notifications -->
+>>>>>>> 7d5903f9c63716977b5691bda4fc5e1d44c88b64
 
             var notification = window.webkitNotifications.createNotification(
                 'logo1.png', 'ひとこと送信の時間', 'ほ？');
