@@ -12,5 +12,5 @@ Test run
 - Load unpacked extension and select the whole folder
 
 Others
-- Default logo from http://hitosizuku.blog53.fc2.com/blog-entry-198.html
-- Default ring from http://www.youtube.com/watch?v=KaOo73W_GS8
+- Default notification logo from http://hitosizuku.blog53.fc2.com/blog-entry-198.html
+- Default notification sound from http://www.youtube.com/watch?v=KaOo73W_GS8
