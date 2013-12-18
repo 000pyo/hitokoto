@@ -1,11 +1,10 @@
-Hitokoto Reminder v.0.1
+Hitokoto Reminder v.0.2
 ==================
 Test Chrome app for reminding Milimas' Hitokoto Soushin
 
 Notes
 - Replace notify1.mp3 with desired sound to ring
-- Still no save function - everything will be reset when the window is closed
-- Need window to be opened to function
+- Sound notification on by default
 
 Test run
 - Enable developer mode on Chrome's "chrome://extensions"
