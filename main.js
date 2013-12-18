@@ -50,8 +50,6 @@ function stopNotification()
 chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes["chkSound"]) {
       playSound = changes["chkSound"].newValue;
-      window.webkitNotifications.createNotification(
-                'logo1.png', playSound, notifyMessage[randomInt(0, notifyMessage.length - 1)]).show();
     }
 
     if (changes["htkActive"]){
