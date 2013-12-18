@@ -1,8 +1,10 @@
-function timeCtrl($scope,$timeout) {
 
-    $(document).ready(function(){
-		$('#counter').hide();
-	});
+
+
+
+
+function timeCtrl($scope,$timeout) {
+    var notID = 0;
 
     $scope.counter;
     $scope.displayTime;
@@ -13,7 +15,8 @@ function timeCtrl($scope,$timeout) {
 
     var alertNotified = false;
 
-    
+
+
     function updateTime(){
     	$scope.currentTime = Date.now();
         $scope.displayTime = {
@@ -40,9 +43,15 @@ function timeCtrl($scope,$timeout) {
             	$('#notifyAudio')[0].play();
     		}
             
-            alert("");
+            //alert("");
 
+            var notification = window.webkitNotifications.createNotification(
+                'logo1.png', 'ひとこと送信の時間', 'ほ？');
 
+            notification.onclick = function(){$('#btnReset').click()};
+            notification.onclose = function(){$('#btnReset').click()};
+
+            notification.show();
 
 
             alertNotified = true;
@@ -71,7 +80,7 @@ function timeCtrl($scope,$timeout) {
     	}
     	else
     	{
-    		var duration = 5*1000;
+    		var duration = 8*60*60*1000;
         	$scope.startTime = Date.now();
         	$scope.finishTime = Date.now() + duration;
         	$scope.clicked = true;
@@ -83,7 +92,45 @@ function timeCtrl($scope,$timeout) {
     	
     }
 
+    $('#txtChkSound').click(function(){
+        $('#chkSound').prop("checked", !($('#chkSound').is(':checked')));
+    });
+
+
+    
+
+
+    $(document).ready(function(){
+        $('#counter').hide();
+    });
+
+
+/*
+document.querySelector('#btnTest').addEventListener('click', function() {
+    
+    $('#debug_1').append("Test1");
+    var havePermission = window.webkitNotifications.checkPermission();
+    
+
+  if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
+    // function defined in step 2
+    //alert(havePermission);
+    window.webkitNotifications.createNotification(
+        'logo1.png', 'Notification Title', 'Notification content...').show();
+
+
+  } else {
+    window.webkitNotifications.requestPermission();
+  }
+}, false);*/
+
+
+
+
 }
+
+
+
 
 
 
