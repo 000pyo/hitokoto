@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Hitokoto Reminder",
-  "version": "1",
+  "version": "0.1",
   "permissions": ["notifications","storage", "<all_urls>"
   ],
   "app": {

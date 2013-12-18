@@ -1,8 +1,3 @@
-
-
-
-
-
 function timeCtrl($scope,$timeout) {
     var notID = 0;
 
@@ -42,21 +37,13 @@ function timeCtrl($scope,$timeout) {
     		{
             	$('#notifyAudio')[0].play();
     		}
-            
-<<<<<<< HEAD
-            //alert("");
-=======
-            alert("");
-            
-            
-            <!-- Call chrome.notifications -->
->>>>>>> 7d5903f9c63716977b5691bda4fc5e1d44c88b64
+
 
             var notification = window.webkitNotifications.createNotification(
-                'logo1.png', 'ひとこと送信の時間', 'ほ？');
+                'logo1.png', 'ひとこと送信の時間', notifyMessage[randomInt(0, notifyMessage.length - 1)]);
 
-            notification.onclick = function(){$('#btnReset').click()};
-            notification.onclose = function(){$('#btnReset').click()};
+            notification.onclick = function(){if($scope.clicked){$('#btnReset').click()}};
+            notification.onclose = function(){if($scope.clicked){$('#btnReset').click()}};
 
             notification.show();
 
@@ -110,6 +97,34 @@ function timeCtrl($scope,$timeout) {
     $(document).ready(function(){
         $('#counter').hide();
     });
+
+    function randomInt(min, max){
+        return Math.floor(Math.random()*(max-min+1)+min);
+    }
+
+    var notifyMessage = new Array();
+    notifyMessage[0] = "ほ？";
+    notifyMessage[1] = "ffdy";
+    notifyMessage[2] = "解体のアイドルnkcdy4649";
+    notifyMessage[3] = "ﾓﾁｮｶﾜｲｲﾈｰ";
+    notifyMessage[4] = "ｾﾘｶｶﾜｲｲﾈｰ";
+    notifyMessage[5] = "モチョカワイイネー";
+    notifyMessage[6] = "もちょかわいいねー";
+    notifyMessage[7] = "闇に飲まれよ";
+    notifyMessage[8] = "煩わしい太陽ね";
+    notifyMessage[9] = "天空の光よ!!";
+    notifyMessage[10] = "クックック…闇に飲まれよ！";
+    notifyMessage[11] = "まぁまぁ眼鏡どうぞ";
+    notifyMessage[12] = "まぁまぁ猫耳どうぞ♪";
+    notifyMessage[13] = "わかるわ";
+    notifyMessage[14] = "わからないわ";
+    notifyMessage[15] = "ハピハピしてるぅ？";
+    notifyMessage[16] = "!すでのな";
+    notifyMessage[17] = "なのです!";
+    notifyMessage[18] = "にょわー☆";
+    notifyMessage[19] = "にょわにょわにょわにょわ";
+    notifyMessage[20] = "หยวยๆๆๆ";
+
 
 
 /*
