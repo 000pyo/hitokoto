@@ -6,6 +6,10 @@ Notes
 - Replace notify1.mp3 with desired sound to ring
 - Sound notification on by default
 
+Installaion
+- Get .crx file from https://github.com/000pyo/hitokoto/blob/master/hitokoto0.2.crx
+- Drag the file into "chrome://extensions"
+
 Test run
 - Enable developer mode on Chrome's "chrome://extensions"
 - Load unpacked extension and select the whole folder
