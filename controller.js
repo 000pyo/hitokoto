@@ -38,7 +38,7 @@ function timeCtrl($scope,$timeout) {
     	if(!($scope.htkActive))
     	{
 
-            var duration = 8*60*60*1000;
+            var duration = 30*1000;
             $scope.startTime = Date.now();
             $scope.finishTime = Date.now() + duration;
             chrome.storage.sync.set({"htkStartTime": $scope.startTime}, function() {});
@@ -139,7 +139,15 @@ function timeCtrl($scope,$timeout) {
 
     //For Testing
     $('#btnTest').click(function(){
-        chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 10000});
+        //chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 10000});
+        chrome.alarms.get('hitokotoAlarm', function(alarm){
+            $('#debug_1').append(alarm);
+            if (typeof alarm == 'undefined' )
+            {
+                $('#debug_1').append("undefined");
+                chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 2000});
+            }
+        });
     });
 
 

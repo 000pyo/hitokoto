@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Hitokoto Reminder",
-  "version": "0.2",
-  "permissions": ["notifications","storage", "alarms", "<all_urls>"
+  "version": "0.2.1",
+  "permissions": ["notifications","storage", "alarms", "idle" , "<all_urls>"
   ],
   "app": {
     "background": {
@@ -10,6 +10,10 @@
 
 
     }
+  },
+  "icons": {
+    "16": "img/stadrink16.png",
+    "128": "img/stadrink128.png"
   },
 
   "minimum_chrome_version": "23"

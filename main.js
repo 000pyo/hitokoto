@@ -18,23 +18,87 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     }
 });
 
+chrome.alarms.get('hitokotoAlarm', function(alarm){
+    if (typeof alarm == 'undefined' )
+    {
+        chrome.storage.sync.get("htkActive", function(val) {
+            if(val["htkActive"])
+            {
+                chrome.storage.sync.get("htkFinishTime", function(val) {
+                    var finTime = val["htkFinishTime"];
+                    if(finTime <= Date.now())
+                    {
+                        myTimer();
+                    }
+                    else
+                    {
+                        chrome.alarms.create('hitokotoAlarm', {when:finTime});
+                    }
+                });
+            }
+        });
+    }
+});
+
+
+var htkRinged = false;
 
 var playSound = true;
 
+var lastState = "active";
 
+chrome.idle.onStateChanged.addListener(function(newstate) {
+        if(lastState == "locked"){
+            //window.webkitNotifications.createNotification('','Test','Test').show();
+            //myTimer();
+            chrome.storage.sync.get("htkActive", function(val) {
+                if(val["htkActive"])
+                {
+                    if(htkRinged){
+                        $("#notifyAudio")[0].currentTime = 0;
+                        myTimer();
+                    }
+                }
+            });
+
+
+        }
+        lastState = newstate;
+});
 
 function myTimer()
-{
+{           htkRinged = true;
+
+            var currentTime = new Date(Date.now());
+
+            var hour = currentTime.getHours();
+            if (hour < 10){ hour = "0" + hour;}
+
+            var min = currentTime.getMinutes();
+            if (min < 10){ min = "0" + min;}
+
+            var sec = currentTime.getSeconds();
+            if (sec < 10){sec = "0" + sec;}
+
 			var notification = window.webkitNotifications.createNotification(
-                'logo1.png', 'ひとこと送信の時間', notifyMessage[randomInt(0, notifyMessage.length - 1)]);
+                'img/logo1.png', 'ひとこと送信の時間 - '+ hour + ":" + min + ":" + sec , notifyMessage[randomInt(0, notifyMessage.length - 1)]);
 
             notification.onclick = function(){stopNotification()};
-            notification.onclose = function(){stopNotification()};
+            //notification.onclose = function(){stopNotification()};
 
             notification.show();
+            
+            
             if(playSound)
             {
-                $('#notifyAudio')[0].play();
+                chrome.idle.queryState(60, function(state){
+                    if(state != "locked")
+                    {
+                        $('#notifyAudio')[0].play();
+                    }
+                });
+
+                
             }
 }
 
@@ -44,6 +108,7 @@ function stopNotification()
     $("#notifyAudio")[0].currentTime = 0;
     chrome.alarms.clear('hitokotoAlarm');
     chrome.storage.sync.set({"htkActive": false}, function() {});
+    htkRinged = false;
 }
 
 
@@ -88,3 +153,15 @@ var notifyMessage = new Array();
     notifyMessage[18] = "にょわー☆";
     notifyMessage[19] = "にょわにょわにょわにょわ";
     notifyMessage[20] = "หยวยๆๆๆ";
+    notifyMessage[21] = "orz<踏み台でう";
+    notifyMessage[22] = "ﾙ*'ヮ')ﾙふひひ★";
+    notifyMessage[23] = "ζ*'ヮ')ζ＜うっう～";
+    notifyMessage[24] = "のヮののヮののヮののヮの";
+    notifyMessage[25] = "ﾉﾟヮﾟﾉノ";
+    notifyMessage[26] = "|イ-_-Y|";
+    notifyMessage[27] = "ﾙ*'ヮ')ﾙ 幼女可愛いじゃあ～";
+    notifyMessage[28] = "うどん、うどんはいかがですか？";
+    notifyMessage[29] = "今日は、うどんのことを、一番好きになっていってくださいね♪";
+    notifyMessage[30] = "(*ﾟ∀ﾟ)o彡ﾟﾐﾐﾐﾝ！ﾐﾐﾐﾝ！ｳｰｻﾐﾝ!!";
+    
+
