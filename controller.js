@@ -38,7 +38,7 @@ function timeCtrl($scope,$timeout) {
     	if(!($scope.htkActive))
     	{
 
-            var duration = 30*1000;
+            var duration = 8*60*60*1000;
             $scope.startTime = Date.now();
             $scope.finishTime = Date.now() + duration;
             chrome.storage.sync.set({"htkStartTime": $scope.startTime}, function() {});
