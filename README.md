@@ -2,6 +2,8 @@ Hitokoto Reminder v.0.2.2
 ==================
 Test Chrome app for reminding Milimas' Hitokoto Soushin
 
+On Chrome Web Store - https://chrome.google.com/webstore/detail/hitokoto-reminder/jmdbimjiofdkendogeiomcbeebenglnk
+
 Notes
 - Replace notify1.mp3 with desired sound to ring
 - Sound notification on by default
