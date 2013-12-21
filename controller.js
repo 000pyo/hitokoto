@@ -8,6 +8,10 @@ function timeCtrl($scope,$timeout) {
     $scope.htkActive = false;
     $scope.currentTime = Date.now();
 
+    $scope.editHr = 0;
+    $scope.editMin = 1;
+    $scope.editSec = 2;
+
 
 
     function updateTime(){
@@ -51,6 +55,7 @@ function timeCtrl($scope,$timeout) {
             $('#btnReset').text("Stop");
             $('#btnReset').addClass("btn-danger");
             $('#btnReset').removeClass("btn-success")
+
             //$('#debug_1').append($scope.htkActive);
 
     	}
@@ -58,6 +63,7 @@ function timeCtrl($scope,$timeout) {
     	{
             
     		chrome.storage.sync.set({"htkActive": false}, function() {});
+            $('#htktEdit').hide();
             //$('#debug_1').append($scope.htkActive);
     	}
     	
@@ -112,7 +118,12 @@ function timeCtrl($scope,$timeout) {
 
 
     $(document).ready(function(){
+        $('#debug_1').hide();
+        $('#btnTest').hide();
+
         $('#counter').hide();
+        $('#htktEdit').hide();
+        $('#editError').hide();
     });
 
     chrome.storage.onChanged.addListener(function(changes, namespace) {
@@ -134,6 +145,41 @@ function timeCtrl($scope,$timeout) {
         }
       }
   });
+
+    $scope.showEdit = function(){
+        $('#htktEdit').toggle();
+    }
+
+
+    $scope.editHtktTime = function(){
+        $('#debug_1').append($scope.editHr + " ");
+        $('#debug_1').append($scope.editMin + " ");
+        $('#debug_1').append($scope.editSec + " ");
+        
+        if($scope.editHr < 8 && $scope.editMin < 60 && $scope.editSec < 60)
+        {
+
+            
+            chrome.alarms.clear('hitokotoAlarm');
+
+            $scope.startTime = Date.now();
+        
+            $scope.finishTime = Date.now() + $scope.editHr*1000*60*60 + $scope.editMin*1000*60 + $scope.editSec*1000;
+            chrome.storage.sync.set({"htkStartTime": $scope.startTime}, function() {});
+            chrome.storage.sync.set({"htkFinishTime": $scope.finishTime}, function() {});
+            chrome.alarms.create('hitokotoAlarm', {when: $scope.finishTime});
+            $('#editError').hide();
+            $('#htktEdit').hide();
+            
+        }
+        else{
+            $('#editError').show();    
+        }
+        
+
+        
+
+    }
 
     
 

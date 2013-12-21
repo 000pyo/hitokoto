@@ -39,7 +39,7 @@
     	
         <div ng-controller="timeCtrl" >
         	<h1>Hitokoto Reminder</h1>
-        	<article class="well">
+        	<article class="well well-sm">
 
         		<p>{{currentTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>
         		<div class="panel">
@@ -47,11 +47,30 @@
     			
 				<span id="counter">
 					  {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
-    			</span>
-    			</div>
+    			       <a id="btnEdit" ng-click="showEdit()">Edit</a>
+                </span>
+    			
+                </div>
+
     			<p>Start time: {{startTime | date:'dd MMMM yyyy - HH:mm:ss'}} <br>
-    			   Finish time: {{finishTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>
+    			   Finish time: {{finishTime | date:'dd MMMM yyyy - HH:mm:ss'}}<br>
+                   </p>
     		</article>
+            
+            <div id="htktEdit">
+                <h3 id="editTime">Edit</h3>
+                <article class="well well-sm" >
+                    <p>Time Remaining: <br>
+                    <input type="number" name="editHr" min="0" max="8" maxlength="1" size="2" ng-model="editHr">Hr 
+                    <input type="number" name="editMin" min="0" max="59" maxlength="2" size="2" ng-model="editMin">Min
+                    <input type="number" name="editSec" min="0" max="59" maxlength="2" size="2" ng-model="editSec">Sec
+                    </p>
+                    <div id="editError" class="alert alert-danger">
+                        <p >Invalid input value</p>
+                    </div>
+                    <button id="btnSaveEdit" class="btn btn-default" ng-click="editHtktTime()">Save</button>
+                </article>  
+            </div>
 
     		<h3 id="setting">Settings</h3>
     		<article class="well well-sm">
