@@ -1,4 +1,4 @@
-Hitokoto Reminder v.0.2
+Hitokoto Reminder v.0.2.2
 ==================
 Test Chrome app for reminding Milimas' Hitokoto Soushin
 
@@ -7,7 +7,7 @@ Notes
 - Sound notification on by default
 
 Installaion
-- Get .crx file from https://github.com/000pyo/hitokoto/blob/master/hitokoto0.2.crx
+- Get .crx file from https://github.com/000pyo/hitokoto/blob/master/hitokoto0.2.2.crx
 - Drag the file into "chrome://extensions"
 
 Test run
