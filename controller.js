@@ -1,4 +1,7 @@
 function timeCtrl($scope,$timeout) {
+    //------------------------
+    //Global variables field
+    //------------------------
     var notID = 0;
 
     $scope.counter;
@@ -9,10 +12,32 @@ function timeCtrl($scope,$timeout) {
     $scope.currentTime = Date.now();
 
     $scope.editHr = 0;
-    $scope.editMin = 1;
+    $scope.editMin = 0;
     $scope.editSec = 2;
 
+    $scope.chkSound = true;
 
+    
+
+
+    //==========
+    //On load
+    //==========
+    $(document).ready(function(){
+        $('#debug_1').hide();
+        $('#btnTest').hide();
+
+        $('#counter').hide();
+        $('#htktEdit').hide();
+        $('#editError').hide();
+    });
+
+
+    //=========================
+    //
+    //       Methods
+    //
+    //=========================
 
     function updateTime(){
     	$scope.currentTime = Date.now();
@@ -34,9 +59,8 @@ function timeCtrl($scope,$timeout) {
         
     }
 
-
     var mytimeout = $timeout($scope.onTimeout,1000);
-    
+
 
     $scope.reset= function(){
     	if(!($scope.htkActive))
@@ -70,15 +94,7 @@ function timeCtrl($scope,$timeout) {
     }
 
 
-    $('#txtChkSound').click(function(){
-        $('#chkSound').prop("checked", !($('#chkSound').is(':checked')));
-        chkSoundChanged();
-    });
-
-    $('#chkSound').change(function(){
-        //$('#debug_1').append("Test1");
-        chkSoundChanged();
-    });
+   
 
     function chkSoundChanged(){
         var newValue = ($('#chkSound').is(':checked'));
@@ -87,6 +103,13 @@ function timeCtrl($scope,$timeout) {
         //$('#debug_1').append("Test3");
     }
 
+
+
+//=========================
+//
+//       Get Value
+//
+//=========================
 
     chrome.storage.sync.get("chkSound", function(val) {
         //$('#debug_1').append(val["chkSound"])
@@ -117,15 +140,27 @@ function timeCtrl($scope,$timeout) {
 
 
 
-    $(document).ready(function(){
-        $('#debug_1').hide();
-        $('#btnTest').hide();
 
-        $('#counter').hide();
-        $('#htktEdit').hide();
-        $('#editError').hide();
+//=========================
+//
+//       Listener
+//
+//=========================
+    
+    
+     $('#txtChkSound').click(function(){
+        $('#chkSound').prop("checked", !($('#chkSound').is(':checked')));
+        chkSoundChanged();
     });
 
+    $('#chkSound').change(function(){
+        //$('#debug_1').append("Test1");
+        chkSoundChanged();
+    });
+
+    //------------------------------
+    //Listener: On storage changed
+    //------------------------------
     chrome.storage.onChanged.addListener(function(changes, namespace) {
       if (changes["htkActive"]){
         //$('#debug_1').append(changes["clicked"]);
@@ -182,7 +217,7 @@ function timeCtrl($scope,$timeout) {
     }
 
     
-
+    /*
     //For Testing
     $('#btnTest').click(function(){
         //chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 10000});
@@ -194,7 +229,7 @@ function timeCtrl($scope,$timeout) {
                 chrome.alarms.create('hitokotoAlarm', {when: Date.now() + 2000});
             }
         });
-    });
+    });*/
 
 
 
