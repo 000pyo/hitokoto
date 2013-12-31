@@ -17,6 +17,12 @@ function timeCtrl($scope,$timeout) {
 
     $scope.chkSound = true;
 
+
+
+    $scope.notify23 = false;
+    $scope.notify15 = false;
+
+
     
 
 
@@ -24,10 +30,10 @@ function timeCtrl($scope,$timeout) {
     //On load
     //==========
     $(document).ready(function(){
-        $('#debug_1').hide();
+        //$('#debug_1').hide();
         $('#btnTest').hide();
 
-        $('#counter').hide();
+        $('.htktCounter').hide();
         $('#htktEdit').hide();
         $('#editError').hide();
     });
@@ -75,10 +81,10 @@ function timeCtrl($scope,$timeout) {
 
             //$scope.htkActive = true;
             chrome.storage.sync.set({"htkActive": true}, function() {});
-            $('#counter').show();
-            $('#btnReset').text("Stop");
-            $('#btnReset').addClass("btn-danger");
-            $('#btnReset').removeClass("btn-success")
+            $('.htktCounter').show();
+            $('.btnHtktReset').text("Stop");
+            $('.btnHtktReset').addClass("btn-danger");
+            $('.btnHtktReset').removeClass("btn-success")
 
             //$('#debug_1').append($scope.htkActive);
 
@@ -91,6 +97,23 @@ function timeCtrl($scope,$timeout) {
             //$('#debug_1').append($scope.htkActive);
     	}
     	
+    }
+
+    $scope.notifyTimeChanged = function(notifyId){
+        switch(notifyId)
+        {
+            case 15:
+                $('#debug_1').append($scope.notify15 + "15 ");
+                chrome.storage.sync.set({"notify15": $scope.notify15 }, function(){});
+                break;
+            case 23:
+                $('#debug_1').append($scope.notify23 + "23 ");
+                chrome.storage.sync.set({"notify23": $scope.notify23 }, function(){});
+                break;
+            default:
+                $('#debug_1').append("Default ");
+                break;
+        }
     }
 
 
@@ -121,10 +144,10 @@ function timeCtrl($scope,$timeout) {
         $scope.htkActive = val["htkActive"];
         if(val["htkActive"])
         {
-            $('#counter').show();
-            $('#btnReset').text("Stop");
-            $('#btnReset').addClass("btn-danger");
-            $('#btnReset').removeClass("btn-success")
+            $('.htktCounter').show();
+            $('.btnHtktReset').text("Stop");
+            $('.btnHtktReset').addClass("btn-danger");
+            $('.btnHtktReset').removeClass("btn-success")
 
             chrome.storage.sync.get("htkFinishTime", function(val) {
                 $scope.finishTime = val["htkFinishTime"];
@@ -136,6 +159,13 @@ function timeCtrl($scope,$timeout) {
         }
     });
 
+    chrome.storage.sync.get("notify15", function(val){
+        $scope.notify15 = val["notify15"];
+    });
+
+    chrome.storage.sync.get("notify23", function(val){
+        $scope.notify23 = val["notify23"];
+    });
     
 
 
@@ -172,10 +202,10 @@ function timeCtrl($scope,$timeout) {
         if(!$scope.htkActive)
         {
             //$('#debug_1').append($scope.htkActive);
-            $('#counter').hide();
-            $('#btnReset').text("Start");
-            $('#btnReset').addClass("btn-success");
-            $('#btnReset').removeClass("btn-danger")
+            $('.htktCounter').hide();
+            $('.btnHtktReset').text("Start");
+            $('.btnHtktReset').addClass("btn-success");
+            $('.btnHtktReset').removeClass("btn-danger")
             $scope.htkActive = false;
         }
       }
@@ -205,6 +235,7 @@ function timeCtrl($scope,$timeout) {
             chrome.alarms.create('hitokotoAlarm', {when: $scope.finishTime});
             $('#editError').hide();
             $('#htktEdit').hide();
+            $("html, body").animate({ scrollTop: 0 }, "slow");
             
         }
         else{
@@ -215,6 +246,14 @@ function timeCtrl($scope,$timeout) {
         
 
     }
+
+    $scope.editHtktCancel = function(){
+        $('#editError').hide();
+        $('#htktEdit').hide();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+
+    }
+
 
     
     /*

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app ng-csp>
+<html ng-app ng-csp style="overflow-y:auto;">
 <head>
     <meta charset="utf-8">
     <title>Hitokoto Reminder</title>
@@ -35,19 +35,52 @@
 
 
 
-    <div class="container">
+    <div class="container" >
     	
         <div ng-controller="timeCtrl" >
-        	<h1>Hitokoto Reminder</h1>
+        	<h1>Home</h1>
+            <article class="well well-sm">
+
+                <!--<p>{{currentTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>-->
+                <p>Milimas Hitokoto: {{finishTime | date:'HH:mm:ss'}}</p>
+                <div class="panel">
+                <button id="btnResetH" class="btn btn-success btnHtktReset" ng-click="reset()" >Start</button>
+                
+                <span class="htktCounter">
+                      {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
+                       <a href="#htktEdit" id="btnEditH" ng-click="showEdit()">Edit</a>
+                </span>
+                
+                </div>
+                
+
+                <p>Nofity</p>
+                <div class="panel">
+                    <p>
+
+                    <input type="checkbox" id="chkNotify15H" ng-model="notify15" ng-change="notifyTimeChanged(15)" /> 
+                    <span class="spnNotify23" ng-click="notify15 = !notify15;notifyTimeChanged(15);">Notify 15.00</span><br>
+
+                    <input type="checkbox" id="chkNotify23H" ng-model="notify23" ng-change="notifyTimeChanged(23)" /> 
+                    <span class="spnNotify23" ng-click="notify23 = !notify23;notifyTimeChanged(23);">Notify 23.00</span>
+
+                    </p>
+                </div>
+            </article>
+
+
+
+
+            <h2>Hitokoto Reminder</h2>
         	<article class="well well-sm">
 
-        		<p>{{currentTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>
+        		
         		<div class="panel">
-    			<button id="btnReset" class="btn btn-success" ng-click="reset()" >Start</button>
+    			<button id="btnReset1" class="btn btn-success btnHtktReset" ng-click="reset()" >Start</button>
     			
-				<span id="counter">
+				<span class="htktCounter">
 					  {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
-    			       <a id="btnEdit" ng-click="showEdit()">Edit</a>
+    			       <a href="#htktEdit"  id="btnEdit" ng-click="showEdit()">Edit</a>
                 </span>
     			
                 </div>
@@ -69,6 +102,7 @@
                         <p >Invalid input value</p>
                     </div>
                     <button id="btnSaveEdit" class="btn btn-default" ng-click="editHtktTime()">Save</button>
+                    <button id="btnCancelEdit" class="btn btn-default" ng-click="editHtktCancel()">Cancel</button>
                 </article>  
             </div>
 

@@ -11,6 +11,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
 });
 
 
+
 //------------------------
 //Global variables field
 //------------------------
@@ -18,6 +19,14 @@ var htktFinishTime;
 var htkRinged = false;
 var playSound = true;
 var lastState = "active";
+
+
+var notify23 = false;
+
+var notify15;
+var notify15Ringed = false;
+
+
 
 
 //=========================
@@ -35,7 +44,18 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
         notifyTimer(1);
 
     }
+    
+    if (alarm.name == 'notify15'){
+        //window.webkitNotifications.createNotification('', "Alarm notify15 ringed", "test").show();
+        notifyTimer(15);
+    }
+
+    if (alarm.name == 'notify23'){
+        notifyTimer(23);
+    }
 });
+
+
 
 //====================================
 //Litsener: On storage value changes
@@ -57,6 +77,26 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
     if (changes["htkFinishTime"])
     {
         window.htktFinishTime = changes["htkFinishTime"].newValue;
+    }
+
+    if (changes["notify15"])
+    {
+        window.notify15 = changes["notify15"].newValue;
+        //window.webkitNotifications.createNotification('','Notify15',window.notify15).show();
+        if(!window.notify15)
+        {
+            chrome.chrome.alarms.clear('notify15');
+        }
+    }
+
+    if (changes["notify23"])
+    {
+        window.notify23 = changes["notify23"].newValue;
+        //window.webkitNotifications.createNotification('','Notify23',window.notify23).show();
+        if(!window.notify23)
+        {
+            chrome.chrome.alarms.clear('notify23');
+        }
     }
 });
 
@@ -91,6 +131,25 @@ chrome.idle.onStateChanged.addListener(function(newstate) {
 //=========================
 
 
+
+//-------------------------
+//Get: Notify on/off
+//-------------------------
+chrome.storage.sync.get("notify15", function(val){
+    window.notify15 = val["notify15"];
+    //window.webkitNotifications.createNotification('', "Test", "test").show();
+});
+
+
+
+chrome.storage.sync.get("notify23", function(val){
+    window.notify23 = val["notify23"];
+});
+
+
+
+
+
 //-------------------------
 //Get: Alarm values
 //-------------------------
@@ -98,6 +157,7 @@ chrome.alarms.get('hitokotoAlarm', function(alarm){
     if (typeof alarm == 'undefined' )
     {
         chrome.storage.sync.get("htkActive", function(val) {
+
             if(val["htkActive"])
             {
                 chrome.storage.sync.get("htkFinishTime", function(val) {
@@ -119,6 +179,32 @@ chrome.alarms.get('hitokotoAlarm', function(alarm){
 });
 
 
+//chrome.alarms.clear('notify15');
+
+
+chrome.alarms.get('notify15', function(alarm){
+    //window.webkitNotifications.createNotification('', "Get notify 15", window.notify15).show();
+    if (typeof alarm == 'undefined')
+    {
+        if (window.notify15)
+        {   
+            chrome.alarms.create('notify15', {when: getAlarmTime(15)});
+            window.webkitNotifications.createNotification('', "Set notify15 alarm", window.notify15).show();
+        }
+    }
+});
+
+chrome.alarms.get('notify23', function(alarm){
+    //window.webkitNotifications.createNotification('', "Get notify 15", window.notify15).show();
+    if (typeof alarm == 'undefined')
+    {
+        if (window.notify23)
+        {   
+            chrome.alarms.create('notify23', {when: getAlarmTime(23)});
+            window.webkitNotifications.createNotification('', "Set notify15 alarm", window.notify23).show();
+        }
+    }
+});
 
 
 
@@ -149,6 +235,14 @@ function notifyTimer(alarmType)
             notificationTitle = 'ひとこと送信の時間 - ';
             currentTime = new Date(window.htktFinishTime);
             break;
+        case 15:
+            notificationIcon = '';
+            notificationTitle = 'Notify 15.00';
+            break;
+        case 23:
+            notificationIcon = '';
+            notificationTitle = 'Notify 23.00';
+            break;
         default:
             notificationIcon = '';
             notificationTitle = 'Untitled - ';
@@ -174,6 +268,12 @@ function notifyTimer(alarmType)
     {
         case 1:
             notification.onclick = function(){chrome.storage.sync.set({"htkActive": false}, function() {});};
+            break;
+        case 15:
+            stopNotification(15);
+            break;
+        case 23:
+            stopNotification(23);
             break;
         default:
             break;
@@ -209,7 +309,18 @@ function stopNotification(alarmType)
             //chrome.storage.sync.set({"htkActive": false}, function() {});
             htkRinged = false;
             break;
-
+        case 15:
+            $('#notifyAudio')[0].pause();
+            $("#notifyAudio")[0].currentTime = 0;
+            chrome.alarms.clear('notify15');
+            chrome.alarms.create('notify15',{when:getEpochTime(15, 0) + 24*60*60*1000});
+            break;
+        case 23:
+            $('#notifyAudio')[0].pause();
+            $("#notifyAudio")[0].currentTime = 0;
+            chrome.alarms.clear('notify23');
+            chrome.alarms.create('notify23',{when:getEpochTime(23, 0) + 24*60*60*1000});
+            break;
         default:
             break;
     }
@@ -229,6 +340,27 @@ function stopNotification(alarmType)
 function randomInt(min, max){
         return Math.floor(Math.random()*(max-min+1)+min);
     }
+
+function getEpochTime(hour, min){
+        var newTime = new Date(Date.now());
+        newTime.setHours(hour);
+        
+        newTime.setMinutes(min);
+
+        return newTime.getTime();
+    }
+
+function getAlarmTime(hour){
+    //var alarmTime = getEpochTime(hour, 0);
+    var alarmTime = getEpochTime(hour, 0);
+
+    if(Date.now() > alarmTime)// + 30*60*1000)
+    {
+        alarmTime += 24*60*60*1000;
+    }
+
+    return alarmTime;
+}
 
 function isPlaying(audelem) {
     return !audelem.paused && !audelem.ended && 0 < audelem.currentTime;
