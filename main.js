@@ -12,9 +12,9 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 
 
-//------------------------
+//=======================
 //Global variables field
-//------------------------
+//=======================
 var htktFinishTime;
 var htkRinged = false;
 var playSound = true;
@@ -24,9 +24,14 @@ var lastState = "active";
 var notify23 = false;
 
 var notify15;
-var notify15Ringed = false;
 
-
+//--------
+//For KoG
+//--------
+var firstBattleTime;
+var firstBattleOn;
+var secondBattleTime;
+var secondBattleOn;
 
 
 //=========================
@@ -48,10 +53,22 @@ chrome.alarms.onAlarm.addListener(function(alarm) {
     if (alarm.name == 'notify15'){
         //window.webkitNotifications.createNotification('', "Alarm notify15 ringed", "test").show();
         notifyTimer(15);
+        //chrome.alarms.clear('notify15');
+
     }
+
 
     if (alarm.name == 'notify23'){
         notifyTimer(23);
+        //chrome.alarms.clear('notify23');        
+    }
+
+
+    if (alarm.name == 'KoGFirstBattle'){
+        notifyTimer(101);
+    }
+    if (alarm.name == 'KoGSecondBattle'){
+        notifyTimer(102);
     }
 });
 
@@ -85,7 +102,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         //window.webkitNotifications.createNotification('','Notify15',window.notify15).show();
         if(!window.notify15)
         {
-            chrome.chrome.alarms.clear('notify15');
+            chrome.alarms.clear('notify15');
         }
     }
 
@@ -95,7 +112,38 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
         //window.webkitNotifications.createNotification('','Notify23',window.notify23).show();
         if(!window.notify23)
         {
-            chrome.chrome.alarms.clear('notify23');
+            chrome.alarms.clear('notify23');
+        }
+    }
+
+
+
+    //For KoG
+    if(changes["firstBattleOn"]){
+        window.firstBattleOn = changes["firstBattleOn"].newValue;
+        if(!window.firstBattleOn){
+            chrome.alarms.clear('KoGFirstBattle');
+        }
+    }
+
+    if(changes["secondBattleOn"]){
+        window.secondBattleOn = changes["secondBattleOn"].newValue;
+        if(!window.secondBattleOn){
+            chrome.alarms.clear('KoGSecondBattle');
+        }
+    }
+
+    if(changes["firstBattleTime"]){
+        window.firstBattleTime = changes["firstBattleTime"].newValue.value;
+        if(window.firstBattleOn){
+            chrome.alarms.create('KoGFirstBattle', {when:getAlarmTime(window.firstBattleTime), periodInMinutes:5});
+        }
+    }
+
+    if(changes["secondBattleTime"]){
+        window.secondBattleTime = changes["secondBattleTime"].newValue.value;
+        if(window.secondBattleOn){
+            chrome.alarms.create('KoGSecondBattle', {when:getAlarmTime(window.secondBattleTime), periodInMinutes:5});
         }
     }
 });
@@ -141,13 +189,30 @@ chrome.storage.sync.get("notify15", function(val){
 });
 
 
-
 chrome.storage.sync.get("notify23", function(val){
     window.notify23 = val["notify23"];
 });
 
 
 
+//----------------------------
+//Get: KoG Notify On/Off & Time
+//----------------------------
+chrome.storage.sync.get("firstBattleOn", function(val){
+    window.firstBattleOn = val["firstBattleOn"];
+});
+
+chrome.storage.sync.get("secondBattleOn", function(val){
+    window.secondBattleOn = val["secondBattleOn"];
+});
+
+chrome.storage.sync.get("firstBattleTime", function(val){
+    window.firstBattleTime = val["firstBattleTime"].value;
+});
+
+chrome.storage.sync.get("secondBattleTime", function(val){
+    window.secondBattleTime = val["secondBattleTime"].value;
+});
 
 
 //-------------------------
@@ -179,8 +244,6 @@ chrome.alarms.get('hitokotoAlarm', function(alarm){
 });
 
 
-//chrome.alarms.clear('notify15');
-
 
 chrome.alarms.get('notify15', function(alarm){
     //window.webkitNotifications.createNotification('', "Get notify 15", window.notify15).show();
@@ -188,7 +251,7 @@ chrome.alarms.get('notify15', function(alarm){
     {
         if (window.notify15)
         {   
-            chrome.alarms.create('notify15', {when: getAlarmTime(15)});
+            chrome.alarms.create('notify15', {when: getAlarmTime(15), periodInMinutes:5});
             window.webkitNotifications.createNotification('', "Set notify15 alarm", window.notify15).show();
         }
     }
@@ -200,14 +263,35 @@ chrome.alarms.get('notify23', function(alarm){
     {
         if (window.notify23)
         {   
-            chrome.alarms.create('notify23', {when: getAlarmTime(23)});
-            window.webkitNotifications.createNotification('', "Set notify15 alarm", window.notify23).show();
+            chrome.alarms.create('notify23', {when: getAlarmTime(23), periodInMinutes:5});
+            window.webkitNotifications.createNotification('', "Set notify23 alarm", window.notify23).show();
         }
     }
 });
 
 
+//--------------
+//KoG Alarm
+//--------------
+chrome.alarms.get('KoGFirstBattle', function(alarm){
+    if (typeof alarm == 'undefined')
+    {
+        if (window.firstBattleOn)
+        {
+            chrome.alarms.create('KoGFirstBattle', {when: getAlarmTime(window.firstBattleTime), periodInMinutes:5});
+        }
+    }
+});
 
+chrome.alarms.get('KoGSecondBattle', function(alarm){
+    if (typeof alarm == 'undefined')
+    {
+        if (window.secondBattleOn)
+        {
+            chrome.alarms.create('KoGSecondBattle', {when: getAlarmTime(window.secondBattleTime), periodInMinutes:5});
+        }
+    }
+});
 
 
 //=========================
@@ -223,7 +307,7 @@ function notifyTimer(alarmType)
 
     var currentTime = new Date(Date.now());
             
-    
+    var sound;
 
 
     switch(alarmType)
@@ -237,11 +321,21 @@ function notifyTimer(alarmType)
             break;
         case 15:
             notificationIcon = '';
-            notificationTitle = 'Notify 15.00';
+            notificationTitle = 'GMT+9 - ';
             break;
         case 23:
             notificationIcon = '';
-            notificationTitle = 'Notify 23.00';
+            notificationTitle = 'GMT+9 - ';
+            break;
+        case 101:
+            notificationIcon = '';
+            notificationTitle = 'Knight of Glory First Battle - ';
+            currentTime = new Date(getEpochTime(window.firstBattleTime, 0));
+            break;
+        case 102:
+            notificationIcon = '';
+            notificationTitle = 'Knight of Glory Second Battle - ';
+            currentTime = new Date(getEpochTime(window.secondBattleTime, 0));
             break;
         default:
             notificationIcon = '';
@@ -268,14 +362,34 @@ function notifyTimer(alarmType)
     {
         case 1:
             notification.onclick = function(){chrome.storage.sync.set({"htkActive": false}, function() {});};
+            sound = $('#notifyAudio')[0];
             break;
         case 15:
-            stopNotification(15);
+            notification.onclick = function(){stopNotification(15)};
+            notification.onclose = function(){stopNotification(15)};
+            sound = $('#notifyAudio')[0];
+            sound.currentTime = 0;
             break;
         case 23:
-            stopNotification(23);
+            notification.onclick = function(){stopNotification(23)};
+            notification.onclose = function(){stopNotification(23)};
+            sound = $('#notifyAudio')[0];
+            sound.currentTime = 0;
+            break;
+        case 101:
+            notification.onclick = function(){stopNotification(101)};
+            notification.onclose = function(){stopNotification(101)};
+            sound = $('#notifyAudio')[0];
+            sound.currentTime = 0;
+            break;
+        case 102:
+            notification.onclick = function(){stopNotification(101)};
+            notification.onclose = function(){stopNotification(101)};
+            sound = $('#notifyAudio')[0];
+            sound.currentTime = 0;
             break;
         default:
+            sound = $('#notifyAudio')[0];
             break;
     }
             
@@ -288,7 +402,10 @@ function notifyTimer(alarmType)
         chrome.idle.queryState(60, function(state){
             if(state != "locked")
             {
-                $('#notifyAudio')[0].play();
+                //$('#notifyAudio')[0].play();
+                
+                
+                sound.play();
             }
         });            
     }
@@ -312,14 +429,24 @@ function stopNotification(alarmType)
         case 15:
             $('#notifyAudio')[0].pause();
             $("#notifyAudio")[0].currentTime = 0;
-            chrome.alarms.clear('notify15');
-            chrome.alarms.create('notify15',{when:getEpochTime(15, 0) + 24*60*60*1000});
+            //chrome.alarms.clear('notify15');
+            chrome.alarms.create('notify15', {when: getAlarmTime(15), periodInMinutes:5});
             break;
         case 23:
             $('#notifyAudio')[0].pause();
             $("#notifyAudio")[0].currentTime = 0;
-            chrome.alarms.clear('notify23');
-            chrome.alarms.create('notify23',{when:getEpochTime(23, 0) + 24*60*60*1000});
+            //chrome.alarms.clear('notify23');
+            chrome.alarms.create('notify23', {when: getAlarmTime(23), periodInMinutes:5});
+            break;
+        case 101:
+            $('#notifyAudio')[0].pause();
+            $("#notifyAudio")[0].currentTime = 0;
+            chrome.alarms.create('KoGFirstBattle', {when: getAlarmTime(window.firstBattleTime), periodInMinutes:5});
+            break;
+        case 102:
+            $('#notifyAudio')[0].pause();
+            $("#notifyAudio")[0].currentTime = 0;
+            chrome.alarms.create('KoGSecondBattle', {when: getAlarmTime(window.secondBattleTime), periodInMinutes:5});
             break;
         default:
             break;
@@ -347,6 +474,9 @@ function getEpochTime(hour, min){
         
         newTime.setMinutes(min);
 
+        newTime.setSeconds(0);
+
+
         return newTime.getTime();
     }
 
@@ -358,6 +488,15 @@ function getAlarmTime(hour){
     {
         alarmTime += 24*60*60*1000;
     }
+
+    var timeZone = (new Date(Date.now()).getTimezoneOffset()) / (-60);
+    var timeDiff = 0;
+    if (timeZone != 9)
+    {
+        timeDiff = (9 - timeZone);
+    }
+
+    alarmTime -= timeDiff*1000*60*60;
 
     return alarmTime;
 }

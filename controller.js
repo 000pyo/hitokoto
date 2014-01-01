@@ -1,7 +1,7 @@
 function timeCtrl($scope,$timeout) {
-    //------------------------
+    //=========================
     //Global variables field
-    //------------------------
+    //=========================
     var notID = 0;
 
     $scope.counter;
@@ -11,16 +11,39 @@ function timeCtrl($scope,$timeout) {
     $scope.htkActive = false;
     $scope.currentTime = Date.now();
 
+    //--------------------
+    //Edit Hitokoto Time
+    //--------------------
     $scope.editHr = 0;
     $scope.editMin = 0;
     $scope.editSec = 2;
 
+
+    //--------------
+    //Setting
+    //-------------
     $scope.chkSound = true;
 
 
-
+    //------------------------
+    //For daily notification
+    //------------------------
     $scope.notify23 = false;
     $scope.notify15 = false;
+
+
+    //-------------------------
+    //For KoG
+    //-------------------------
+    $scope.battleTimes = [
+        {time:"12:00", value:12, index:0}, {time:"13:00", value:13, index:1}, 
+        {time:"18:00", value:18, index:2}, {time:"19:00", value:19, index:3}, 
+        {time:"20:00", value:20, index:4}, {time:"21:00", value:21, index:5}, 
+        {time:"22:00", value:22, index:6}, {time:"23:00", value:23, index:7}];
+    $scope.firstBattle = $scope.battleTimes[1];
+    $scope.secondBattle = $scope.battleTimes[5];
+    $scope.firstBattleOn = false;
+    $scope.secondBattleOn = false;
 
 
     
@@ -127,6 +150,28 @@ function timeCtrl($scope,$timeout) {
     }
 
 
+    //--------
+    //For KoG
+    //--------
+    $scope.firstBattleChanged = function(){
+        chrome.storage.sync.set({"firstBattleOn": $scope.firstBattleOn}, function() {});
+    }
+
+    $scope.firstBattleTimeChanged = function(){
+        chrome.storage.sync.set({"firstBattleTime": $scope.firstBattle}, function() {});
+    }
+
+    $scope.secondBattleChanged = function(){
+        chrome.storage.sync.set({"secondBattleOn": $scope.secondBattleOn}, function() {});
+    }
+
+    $scope.secondBattleTimeChanged = function(){
+        chrome.storage.sync.set({"secondBattleTime": $scope.secondBattle}, function() {});
+    }
+
+    
+
+
 
 //=========================
 //
@@ -167,6 +212,26 @@ function timeCtrl($scope,$timeout) {
         $scope.notify23 = val["notify23"];
     });
     
+    //-------------------
+    //For KoG
+    //-------------------
+     chrome.storage.sync.get("firstBattleOn", function(val) {
+        $scope.firstBattleOn = val["firstBattleOn"];
+    });
+
+    chrome.storage.sync.get("secondBattleOn", function(val) {
+        $scope.secondBattleOn = val["secondBattleOn"];
+    });
+
+    chrome.storage.sync.get("firstBattleTime", function(val) {
+        var index = val["firstBattleTime"].index;
+        $scope.firstBattle = $scope.battleTimes[index];
+    });
+
+    chrome.storage.sync.get("secondBattleTime", function(val) {
+        var index = val["secondBattleTime"].index;
+        $scope.secondBattle = $scope.battleTimes[index];
+    });
 
 
 

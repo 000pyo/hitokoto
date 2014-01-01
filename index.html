@@ -66,6 +66,21 @@
 
                     </p>
                 </div>
+
+                <p><strong>Knight of Glory Battle</strong></p>
+                <div class="panel">
+                    <p>
+                        <input type="checkbox" id="chkKoGFirst" ng-model="firstBattleOn" ng-change="firstBattleChanged()" />
+                        <span id="txtKoGFirst" ng-click="firstBattleOn = !firstBattleOn;firstBattleChanged();" >
+                        First Battle {{firstBattle.time}} {{firstBattle_TimeZone}}</span><br>
+
+                        <input type="checkbox" id="chkKoGSecond" ng-model="secondBattleOn" ng-change="secondBattleChanged()"  />
+                        <span id="txtKoGSecond" ng-click="secondBattleOn = !secondBattleOn;secondBattleChanged();" >
+                        Second Battle {{secondBattle.time}}</span></p>
+                </div>
+                <select ng-model="firstBattle" ng-options="t.time for t in battleTimes" ng-change="firstBattleTimeChanged()" ></select>
+                <select ng-model="secondBattle" ng-options="t.time for t in battleTimes" ng-change="secondBattleTimeChanged()"></select>
+
             </article>
 
 
