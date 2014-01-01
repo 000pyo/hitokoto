@@ -7,11 +7,12 @@ Notes
 - Replace notify1.mp3 with desired sound to ring
 - Test adding daily notification (Still with messy GUI)
 
-Installaion
+Installing with packed crx
 - Get .crx file from https://github.com/000pyo/hitokoto/blob/0.3-Beta/hitokoto0.3.0b.crx
 - Drag the file into "chrome://extensions"
 
-Test run
+Or install the unpacked
+- Download this whole stuff
 - Enable developer mode on Chrome's "chrome://extensions"
 - Load unpacked extension and select the whole folder
 
