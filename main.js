@@ -383,8 +383,8 @@ function notifyTimer(alarmType)
             sound.currentTime = 0;
             break;
         case 102:
-            notification.onclick = function(){stopNotification(101)};
-            notification.onclose = function(){stopNotification(101)};
+            notification.onclick = function(){stopNotification(102)};
+            notification.onclose = function(){stopNotification(102)};
             sound = $('#notifyAudio')[0];
             sound.currentTime = 0;
             break;
