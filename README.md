@@ -1,14 +1,14 @@
-Hitokoto Reminder v.0.3.1b
+Hitokoto Reminder v.0.3.2b
 ==================
 Test Chrome app for reminding Milimas' Hitokoto Soushin
 
 
 Notes
 - Replace notify1/2/3.mp3 with desired sound to ring
-- Test adding daily notification (Still with messy GUI)
+- Test adding daily notification
 
 Installing with packed crx
-- Get .crx file from https://github.com/000pyo/hitokoto/blob/0.3-Beta/hitokoto0.3.1b.crx
+- Get .crx file from https://github.com/000pyo/hitokoto/blob/0.3-Beta/hitokoto0.3.2b.crx
 - Drag the file into "chrome://extensions"
 
 Or install the unpacked
