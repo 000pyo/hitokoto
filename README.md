@@ -4,7 +4,7 @@ Test Chrome app for reminding Milimas' Hitokoto Soushin
 
 
 Notes
-- Replace notify1.mp3 with desired sound to ring
+- Replace notify1/2/3.mp3 with desired sound to ring
 - Test adding daily notification (Still with messy GUI)
 
 Installing with packed crx
