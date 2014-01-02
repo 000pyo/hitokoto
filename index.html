@@ -26,6 +26,7 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
           <ul class="nav navbar-nav">
             <li class="active"><a href="#">Home</a></li>
+            <li><a href="#htktMain">Hitokoto</a></li>
             <li><a href="#setting">Setting</a></li>
             <li><a href="#about">About</a></li>
           </ul>
@@ -41,45 +42,53 @@
         	<h1>Home</h1>
             <article class="well well-sm">
 
+                <div id="home_Htkt" ng-show="chkDisHtkt">
                 <!--<p>{{currentTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>-->
-                <p>Milimas Hitokoto: {{finishTime | date:'HH:mm:ss'}}</p>
-                <div class="panel">
-                <button id="btnResetH" class="btn btn-success btnHtktReset" ng-click="reset()" >Start</button>
+                    <p><strong>Milimas Hitokoto</strong>: {{finishTime | date:'HH:mm:ss'}}</p>
+                    <div class="panel">
+                        <button id="btnResetH" class="btn btn-success btnHtktReset" ng-click="reset()" >Start</button>
                 
-                <span class="htktCounter">
-                      {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
-                       <a href="#htktEdit" id="btnEditH" ng-click="showEdit()">Edit</a>
-                </span>
+                        <span class="htktCounter">
+                          {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
+                           <a href="#htktEdit" id="btnEditH" ng-click="showEdit()">Edit</a>
+                        </span>
                 
+                    </div>
                 </div>
                 
 
-                <p>Nofity</p>
-                <div class="panel">
-                    <p>
 
-                    <input type="checkbox" id="chkNotify15H" ng-model="notify15" ng-change="notifyTimeChanged(15)" /> 
-                    <span class="spnNotify23" ng-click="notify15 = !notify15;notifyTimeChanged(15);">Notify 15.00</span><br>
+                <div id="home_dailyNoti" ng-show="chkDisDNoti">
+                    <p><strong>Daily Notification</strong></p>
+                    <div class="panel">
+                        <p>
 
-                    <input type="checkbox" id="chkNotify23H" ng-model="notify23" ng-change="notifyTimeChanged(23)" /> 
-                    <span class="spnNotify23" ng-click="notify23 = !notify23;notifyTimeChanged(23);">Notify 23.00</span>
+                        <input type="checkbox" id="chkNotify15H" ng-model="notify15" ng-change="notifyTimeChanged(15)" /> 
+                        <span class="spnNotify23" ng-click="notify15 = !notify15;notifyTimeChanged(15);">Notify 15.00</span><br>
 
-                    </p>
+                        <input type="checkbox" id="chkNotify23H" ng-model="notify23" ng-change="notifyTimeChanged(23)" /> 
+                        <span class="spnNotify23" ng-click="notify23 = !notify23;notifyTimeChanged(23);">Notify 23.00</span>
+
+                        </p>
+                    </div>
                 </div>
 
-                <p><strong>Knight of Glory Battle</strong></p>
-                <div class="panel">
-                    <p>
-                        <input type="checkbox" id="chkKoGFirst" ng-model="firstBattleOn" ng-change="firstBattleChanged()" />
-                        <span id="txtKoGFirst" ng-click="firstBattleOn = !firstBattleOn;firstBattleChanged();" >
-                        First Battle {{firstBattle.time}} {{firstBattle_TimeZone}}</span><br>
 
-                        <input type="checkbox" id="chkKoGSecond" ng-model="secondBattleOn" ng-change="secondBattleChanged()"  />
-                        <span id="txtKoGSecond" ng-click="secondBattleOn = !secondBattleOn;secondBattleChanged();" >
-                        Second Battle {{secondBattle.time}}</span></p>
+
+                <div id="home_KoGBattle" ng-show="chkDisKoGB" >
+                    <p><strong>Knight of Glory Battle</strong></p>
+                    <div class="panel">
+                        <p>
+                            <input type="checkbox" id="chkKoGFirst" ng-model="firstBattleOn" ng-change="firstBattleChanged()" />
+                            <span id="txtKoGFirst" ng-click="firstBattleOn = !firstBattleOn;firstBattleChanged();" >
+                            First Battle {{firstBattle.time}}</span><br>
+
+                            <input type="checkbox" id="chkKoGSecond" ng-model="secondBattleOn" ng-change="secondBattleChanged()"  />
+                            <span id="txtKoGSecond" ng-click="secondBattleOn = !secondBattleOn;secondBattleChanged();" >
+                            Second Battle {{secondBattle.time}}</span></p>
+                    </div>
                 </div>
-                <select ng-model="firstBattle" ng-options="t.time for t in battleTimes" ng-change="firstBattleTimeChanged()" ></select>
-                <select ng-model="secondBattle" ng-options="t.time for t in battleTimes" ng-change="secondBattleTimeChanged()"></select>
+
 
             </article>
 
@@ -87,7 +96,7 @@
 
 
             <h2>Hitokoto Reminder</h2>
-        	<article class="well well-sm">
+        	<article id="htktMain" class="well well-sm">
 
         		
         		<div class="panel">
@@ -105,6 +114,8 @@
                    </p>
     		</article>
             
+
+
             <div id="htktEdit">
                 <h3 id="editTime">Edit</h3>
                 <article class="well well-sm" >
@@ -121,14 +132,60 @@
                 </article>  
             </div>
 
+
+            <div id="KoGBattle">
+                    <h3>Knight of Glory Battle</strong></h3>
+                    <div class="well well-sm">
+                        <p>
+                            <input type="checkbox" id="chkKoGFirst_1" ng-model="firstBattleOn" ng-change="firstBattleChanged()" />
+                            <span id="txtKoGFirst_1" ng-click="firstBattleOn = !firstBattleOn;firstBattleChanged();" >
+                            First Battle</span> 
+                            <select ng-model="firstBattle" ng-options="t.time for t in battleTimes" ng-change="firstBattleTimeChanged()" ></select> <br>
+
+                            <input type="checkbox" id="chkKoGSecond_1" ng-model="secondBattleOn" ng-change="secondBattleChanged()"  />
+                            <span id="txtKoGSecond_1" ng-click="secondBattleOn = !secondBattleOn;secondBattleChanged();" >
+                            Second Battle </span>
+                            <select ng-model="secondBattle" ng-options="t.time for t in battleTimes" ng-change="secondBattleTimeChanged()"></select></p>
+                    </div>
+            
+
+            </div>
+                
+                
+                
+
+
     		<h3 id="setting">Settings</h3>
     		<article class="well well-sm">
     			<p>
     				<input type="checkbox" id="chkSound" ng-model="chkSound"><span id="txtChkSound">
     				Play sound</span></p>
+
+                <p><strong>Home</strong><br>
+                    <input type="checkbox" id="chkDisHtkt" ng-model="chkDisHtkt" ng-change="chkHomeChanged(1)"/>
+                    
+                    <span id="txtChkDisHtkt" ng-click="chkDisHtkt = !chkDisHtkt;chkHomeChanged(1);">Display Hitokoto</span><br>
+                    
+
+                    
+                    <input type="checkbox" id="chkDisDNoti" ng-model="chkDisDNoti" ng-change="chkHomeChanged(2);" />
+                    <span id="txtChkDisDNoti" ng-click="chkDisDNoti = !chkDisDNoti;chkHomeChanged(2);">Display Daily Notification</span><br>
+
+                    <input type="checkbox" id="chkDisKoGB" ng-model="chkDisKoGB" ng-change="chkHomeChanged(3);" />
+                    <span id="txtChkDisKoGB" ng-click="chkDisKoGB = !chkDisKoGB;chkHomeChanged(3);">Display KoG Battle</span><br>
+
+                    
+                </p>
                    
 			</article>	
     		
+            <h3 id="About">About</h3>
+            <article class="well well-sm">
+                <p>
+                    Hitokoto Reminderβ v.0.3.2 by @000pyo
+                </p>
+                   
+            </article>  
 
     
     	</div><!-- /timeCtrl -->

@@ -24,6 +24,10 @@ function timeCtrl($scope,$timeout) {
     //-------------
     $scope.chkSound = true;
 
+    //Home
+    $scope.chkDisHtkt = true;
+    $scope.chkDisDNoti = false;
+    $scope.chkDisKoGB = false;
 
     //------------------------
     //For daily notification
@@ -141,12 +145,31 @@ function timeCtrl($scope,$timeout) {
 
 
    
-
+    //-----------
+    //For Setting
+    //-----------
     function chkSoundChanged(){
         var newValue = ($('#chkSound').is(':checked'));
         //$('#debug_1').append("Test2");
         chrome.storage.sync.set({"chkSound": newValue}, function() {});
         //$('#debug_1').append("Test3");
+    }
+
+    $scope.chkHomeChanged = function(num){
+        switch(num){
+            case 1:
+                chrome.storage.sync.set({"chkDisHtkt": $scope.chkDisHtkt}, function() {});
+                break;
+            case 2:
+                chrome.storage.sync.set({"chkDisDNoti": $scope.chkDisDNoti}, function() {});
+                break;
+            case 3:
+                chrome.storage.sync.set({"chkDisKoGB": $scope.chkDisKoGB}, function() {});
+                break;
+            default:
+                window.webkitNotifications.createNotification('', "Test", "Test").show();
+                break;
+        }
     }
 
 
@@ -178,12 +201,28 @@ function timeCtrl($scope,$timeout) {
 //       Get Value
 //
 //=========================
-
+    //---------------
+    //For Setting
+    //---------------
     chrome.storage.sync.get("chkSound", function(val) {
         //$('#debug_1').append(val["chkSound"])
         $('#chkSound').prop("checked", val["chkSound"]);
     });
 
+    chrome.storage.sync.get("chkDisHtkt", function(val) {
+        $scope.chkDisHtkt = val["chkDisHtkt"];
+    });    
+
+    chrome.storage.sync.get("chkDisDNoti", function(val) {
+        $scope.chkDisDNoti = val["chkDisDNoti"];
+    });
+    chrome.storage.sync.get("chkDisKoGB", function(val) {
+        $scope.chkDisKoGB = val["chkDisKoGB"];
+    });
+
+    //-------------
+    //For Hitokoto
+    //-------------
     chrome.storage.sync.get("htkActive", function(val) {
         //$('#debug_1').append(val["htkActive"]);
         $scope.htkActive = val["htkActive"];

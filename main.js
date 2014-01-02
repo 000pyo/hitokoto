@@ -34,6 +34,7 @@ var secondBattleTime;
 var secondBattleOn;
 
 
+
 //=========================
 //
 //       Listener
@@ -235,7 +236,7 @@ chrome.alarms.get('hitokotoAlarm', function(alarm){
                     }
                     else
                     {
-                        chrome.alarms.create('hitokotoAlarm', {when:window.htktFinishTime});
+                        chrome.alarms.create('hitokotoAlarm', {when:window.htktFinishTime, periodInMinutes:5});
                     }
                 });
             }
