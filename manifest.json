@@ -1,13 +1,28 @@
 {
   "manifest_version": 2,
+<<<<<<< HEAD
   "name": "gbfLucky",
   "version": "0.1",
   "permissions": ["notifications","storage", "alarms", "<all_urls>"
+=======
+  "name": "Hitokoto Reminder",
+  "version": "0.2.2",
+  "permissions": ["notifications","storage", "alarms", "idle" , "<all_urls>"
+>>>>>>> FETCH_HEAD
   ],
   "app": {
     "background": {
       "page": "background.html"
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> FETCH_HEAD
     }
+  },
+  "icons": {
+    "16": "img/stadrink16.png",
+    "128": "img/stadrink128.png"
   },
 
   "minimum_chrome_version": "28"
