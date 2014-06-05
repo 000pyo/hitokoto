@@ -2,8 +2,8 @@
 <html ng-app ng-csp>
 <head>
     <meta charset="utf-8">
-    <title>Hitokoto Reminder</title>
-    <link href="bootstrap.min.css" rel="stylesheet">
+    <title>Lucky Reminder</title>
+    <link href="lib/bootstrap.min.css" rel="stylesheet">
       <!-- Add custom CSS here -->
     <style>
 	body {margin-top: 60px;}
@@ -20,7 +20,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">Hitokoto Reminder</a>
+          <a class="navbar-brand" href="#">Lucky Reminder</a>
         </div>
         
         <div class="collapse navbar-collapse navbar-ex1-collapse">
@@ -38,36 +38,37 @@
     <div class="container">
     	
         <div ng-controller="timeCtrl" >
-        	<h1>Hitokoto Reminder</h1>
+        	<h1>Lucky Reminder</h1>
         	<article class="well">
 
-        		<p>{{currentTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>
+        		
         		<div class="panel">
-    			<button id="btnReset" class="btn btn-success" ng-click="reset()" >Start</button>
-    			
-				<span id="counter">
-					  {{displayTime.hour}} Hour {{displayTime.min}} Min {{displayTime.sec}} Sec
-    			</span>
-    			</div>
-    			<p>Start time: {{startTime | date:'dd MMMM yyyy - HH:mm:ss'}} <br>
-    			   Finish time: {{finishTime | date:'dd MMMM yyyy - HH:mm:ss'}}</p>
+    			<button id="btnReset" class="btn btn-success" ng-click="startLucky()" >Start</button>
+    			<span id="showRemain">{{timeRemaining.hour}} hr {{timeRemaining.min}} min {{timeRemaining.sec}} sec
+                <a href="#htktEdit" id="btnEditLucky" ng-click="showEdit()">Edit</a>
+                </span> 
+				
     		</article>
 
-    		<h3 id="setting">Settings</h3>
-    		<article class="well well-sm">
-    			<p>
-    				<input type="checkbox" id="chkSound" checked="true"><span id="txtChkSound">
-    				Play sound</span></p>
-                   
-			</article>	
     		
+                <div id="editLucky">
+                    <h3 id="editTime">Edit</h3>
+                    <article class="well well-sm" >
+                        <p>Time Remaining: <br>
+                            <input type="number" name="editHr" min="0" max="8" maxlength="1" size="2" ng-model="editHr">Hr 
+                            <input type="number" name="editMin" min="0" max="59" maxlength="2" size="2" ng-model="editMin">Min
+                            <input type="number" name="editSec" min="0" max="59" maxlength="2" size="2" ng-model="editSec">Sec
+                        </p>
+                        <div id="editError" class="alert alert-danger">
+                            <p >Invalid input value</p>
+                        </div>
+                        <button id="btnSaveEdit" class="btn btn-default" ng-click="editLuckyTime()">Save</button>
+                        <button id="btnCancelEdit" class="btn btn-default" ng-click="editLuckyCancel()">Cancel</button>
+                    </article>  
+                </div><!-- div#editLuckyTime -->
 
     
     	</div><!-- /timeCtrl -->
-
-        <!--
-        <button id="btnTest" class="btn btn-default">Notify me</button>
-        <div id="debug_1"></div>-->
 
 
     </div><!-- /.container -->
@@ -83,11 +84,9 @@
 		<source src="notify.wav" type="audio/wav">-->
 	</audio>
 
-	<script src="angular.min.js"></script>
+	<script src="lib/angular.min.js"></script>
     <script src="controller.js"></script>
-    <script src="app.js"></script>
-    <script src="jquery-2.0.3.min.js"></script>
-    <script src="angular-timer.min.js"></script>
-    <script src="bootstrap.js"></script>
+    <script src="lib/jquery-2.0.3.min.js"></script>
+    <script src="lib/bootstrap.js"></script>
 </body>
 </html>

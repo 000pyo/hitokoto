@@ -1,155 +1,151 @@
 function timeCtrl($scope,$timeout) {
-    var notID = 0;
 
-    $scope.counter;
-    $scope.displayTime;
-    $scope.startTime;
-    $scope.finishTime; 
-    $scope.clicked = false;
-    $scope.currentTime = Date.now();
+    //Finish time of 
+    $scope.finishTime;
+    //Time remaining, calculate from minus finishTime and Date.now()
+    $scope.timeRemaining;
 
-    var alertNotified = false;
+    var remain;
 
-
-
-    function updateTime(){
-    	$scope.currentTime = Date.now();
-        $scope.displayTime = {
-        	hour:parseInt($scope.counter/60/60/1000), 
-        	min:parseInt(($scope.counter/1000)%3600/60), 
-        	sec:parseInt(($scope.counter/1000)%60)};
-    }
-
-
+    /*
+    *For edit time remaining
+    */
+    $scope.editHr = 0;
+    $scope.editMin = 0;
+    $scope.editSec = 2;
 
     $scope.onTimeout = function(){
     	
     	mytimeout = $timeout($scope.onTimeout,1000);
-    	$scope.counter = $scope.finishTime - Date.now();
+        remain = $scope.finishTime - Date.now();
+        $scope.timeRemaining = {
+            hour:parseInt(remain/60/60/1000), 
+            min:parseInt((remain/1000)%3600/60), 
+            sec:parseInt((remain/1000)%60)};
 
-    	//Update current time
-    	updateTime();
+        if ($scope.timeRemaining.hour + $scope.timeRemaining.min + $scope.timeRemaining.sec <=0)
+        {
+            updateButton();
+        }
 
-        //Check if button clicked
-    	if($scope.clicked && $scope.counter <= 0 && alertNotified == false)
-    	{
-    		if($('#chkSound').is(':checked'))
-    		{
-            	$('#notifyAudio')[0].play();
-    		}
-
-
-            var notification = window.webkitNotifications.createNotification(
-                'logo1.png', 'ひとこと送信の時間', notifyMessage[randomInt(0, notifyMessage.length - 1)]);
-
-            notification.onclick = function(){if($scope.clicked){$('#btnReset').click()}};
-            notification.onclose = function(){if($scope.clicked){$('#btnReset').click()}};
-
-            notification.show();
-
-
-            alertNotified = true;
-
-			
-    	}
-        
     }
+        
 
-
-
+        
+    
 
     var mytimeout = $timeout($scope.onTimeout,1000);
     
-    $scope.reset= function(){
-    	if($scope.clicked)
-    	{
-    		$scope.clicked = false;
-    		$('#counter').hide();
-        	$('#notifyAudio')[0].pause();
-        	alertNotified = false;
-        	$('#btnReset').text("Start");
-        	$('#btnReset').addClass("btn-success");
-        	$('#btnReset').removeClass("btn-danger")
-        	$("#notifyAudio")[0].currentTime = 0;
-    	}
-    	else
-    	{
-    		var duration = 8*60*60*1000;
-        	$scope.startTime = Date.now();
-        	$scope.finishTime = Date.now() + duration;
-        	$scope.clicked = true;
-        	$('#counter').show();
-        	$('#btnReset').text("Stop");
-        	$('#btnReset').addClass("btn-danger");
-        	$('#btnReset').removeClass("btn-success")
-    	}
-    	
+
+
+
+
+
+    //Handled start button clicked
+    $scope.startLucky= function(){
+
+        //Get whether alarm is set or not
+        chrome.alarms.get('lucky', function(alarm){
+            //In case not
+            if (typeof alarm == 'undefined')
+            {
+                $scope.finishTime = Date.now() + 1000*60*60*12;
+                chrome.alarms.create('lucky', {when: $scope.finishTime});
+                chrome.alarms.get('lucky', function(alarm){console.log("Alarm at " + new Date(alarm.scheduledTime) + " created.");});
+                updateButton();
+            }
+            else{
+                chrome.alarms.clear('lucky');
+                console.log("lucky Alarm cleared");
+                updateButton();
+            }
+        });
+        //chrome.notifications.create('lucky', {type:"basic", title:"test", message:"Test", iconUrl:"/img/white-64x64.png"}, function(){console.log("Succesfully created notification");});
+
     }
 
-    $('#txtChkSound').click(function(){
-        $('#chkSound').prop("checked", !($('#chkSound').is(':checked')));
-    });
 
 
-    
+    //For update buttpn appearance
+    function updateButton(){
+        chrome.alarms.get('lucky', function(alarm){
+            if(typeof alarm == 'undefined')
+            {
+                $('#btnReset').text("Start");
+                $('#btnRest').addClass("btn-success");
+                $('#btnReset').removeClass("btn-danger");
+                $('#showRemain').hide();
+            }
+            else
+            {
+                $('#btnReset').text("Stop");
+                $('#btnRest').removeClass("btn-success");
+                $('#btnReset').addClass("btn-danger");
+                $('#showRemain').show();
+            }
+        });
+    }
+
+    //To handle when save edit is clicked
+    $scope.editLuckyTime = function(){
+        if($scope.editHr < 12 && $scope.editMin < 60 && $scope.editSec < 60)
+        {
+
+            //Clear lucky alarm            
+            chrome.alarms.clear('lucky');
+            console.log("lucky alarm cleared");
+
+            //set new finish time
+            $scope.finishTime = Date.now() + $scope.editHr*1000*60*60 + $scope.editMin*1000*60 + $scope.editSec*1000;
+            
+            chrome.alarms.create('lucky', {when: $scope.finishTime});
+            console.log("new lucky alarm created");
+
+            $('#editError').hide();
+            $('#editLucky').hide();
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+            updateButton();
+            
+        }
+        else{
+            $('#editError').show();    
+        }
+    }
+
+    //To handle when cancel edit is clicked
+    $scope.editLuckyCancel = function(){
+        $('#editError').hide();
+        $('#editLucky').hide();
+        $("html, body").animate({ scrollTop: 0 }, "slow");
+    }
+
+    //To handle when showEdit button is clicked
+    $scope.showEdit = function(){
+        $('#editLucky').show();
+    }
 
 
+
+
+    //On Document Load
     $(document).ready(function(){
-        $('#counter').hide();
+        updateButton();
+        
+        $('#editError').hide();
+        $('#editLucky').hide();
+
+        chrome.alarms.get('lucky', function(alarm){
+            if (typeof alarm != 'undefined')
+            {
+                $scope.finishTime = alarm.scheduledTime;
+            }
+        });
+
     });
-
-    function randomInt(min, max){
-        return Math.floor(Math.random()*(max-min+1)+min);
-    }
-
-    var notifyMessage = new Array();
-    notifyMessage[0] = "ほ？";
-    notifyMessage[1] = "ffdy";
-    notifyMessage[2] = "解体のアイドルnkcdy4649";
-    notifyMessage[3] = "ﾓﾁｮｶﾜｲｲﾈｰ";
-    notifyMessage[4] = "ｾﾘｶｶﾜｲｲﾈｰ";
-    notifyMessage[5] = "モチョカワイイネー";
-    notifyMessage[6] = "もちょかわいいねー";
-    notifyMessage[7] = "闇に飲まれよ";
-    notifyMessage[8] = "煩わしい太陽ね";
-    notifyMessage[9] = "天空の光よ!!";
-    notifyMessage[10] = "クックック…闇に飲まれよ！";
-    notifyMessage[11] = "まぁまぁ眼鏡どうぞ";
-    notifyMessage[12] = "まぁまぁ猫耳どうぞ♪";
-    notifyMessage[13] = "わかるわ";
-    notifyMessage[14] = "わからないわ";
-    notifyMessage[15] = "ハピハピしてるぅ？";
-    notifyMessage[16] = "!すでのな";
-    notifyMessage[17] = "なのです!";
-    notifyMessage[18] = "にょわー☆";
-    notifyMessage[19] = "にょわにょわにょわにょわ";
-    notifyMessage[20] = "หยวยๆๆๆ";
-
-
-
-/*
-document.querySelector('#btnTest').addEventListener('click', function() {
-    
-    $('#debug_1').append("Test1");
-    var havePermission = window.webkitNotifications.checkPermission();
-    
-
-  if (window.webkitNotifications.checkPermission() == 0) { // 0 is PERMISSION_ALLOWED
-    // function defined in step 2
-    //alert(havePermission);
-    window.webkitNotifications.createNotification(
-        'logo1.png', 'Notification Title', 'Notification content...').show();
-
-
-  } else {
-    window.webkitNotifications.requestPermission();
-  }
-}, false);*/
-
-
 
 
 }
+
 
 
 
